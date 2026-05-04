@@ -15,13 +15,17 @@ messages = {
 	'fr':{
 		'1':'Entrez le nom du project: ',
 		'2': 'Choisissez le repectoire: \n (1) repetoire courant \n (2) entrez le chemin ',
-		'3': 'chemin absolue ou relatif du repectoire :\n'
+		'3': 'chemin absolue ou relatif du repectoire :\n',
+		'4':'creer un environnement virtuel ? (O/N) :\n',
+		'5':'nom de l\'environnement virtuel : \n'
 		},
 	
 	'en':{
 		'1':'Entrer the project\'s name: ',
 		'2': 'Choose the directory: \n (1) current working directory \n (2) entrer the directory path ',
-		'3': 'absolut or relative path of project:\n'
+		'3': 'absolut or relative path of project:\n',
+		'4':'create a virtual environnement ? (Y/N) :\n',
+		'5':'virtual environnement name: '
 		}
 	
 	}

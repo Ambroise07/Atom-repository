@@ -7,6 +7,7 @@ author: Gnabro Israel
 import pathlib
 import shutil
 import argparse
+import subprocess
 
 from __init__ import messages 
 
@@ -49,6 +50,10 @@ class Automate:
 				path = input(self.get_message(3))
 				self.path = pathlib.Path(path).absolute()
 		
+		# create virtual environnement:
+		can_create_venv = input(self.get_message(4))
+		if can_create_venv.strip().lower() == 'o':
+			self.create_virtual_env()
 		
 	def get_message(self, msg_id):
 		""" return message to display in the cmd """
@@ -67,6 +72,12 @@ class Automate:
 			else:
 				shutil.copy2(folder, self.project_dir / folder.name)
 		
+	def create_virtual_env(self):
+		""" create virtual environnement """
+		venv_name = input(self.get_message(5))
+		
+		if not venv_name.strip() == '':
+			subprocess.run(["python3", "-m", "venv", venv_name], check=True)
 		
 	def create_project(self):
 		""" create the project """

@@ -9,6 +9,7 @@ It comes with a template that contains the basic.
 To create a project, run :
 ``` python run.py  ```
 then follow instructions.
+if you want to skip a step, press Enter. (note this work for the venv creation)
 
 # create project in the current worky directory
 You can also create your project inside your current worky directory :
@@ -16,5 +17,6 @@ You can also create your project inside your current worky directory :
 
 # the tools module
 this module has a lot of usefull function you can add yours own.
+
 
 
