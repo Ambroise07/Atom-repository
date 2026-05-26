@@ -224,6 +224,8 @@ def get_project_stats(folder_path):
     total_size = 0
     file_count = 0
     
+    folder_path = get_abspath(folder_path)
+    
     # os.walk parcourt l'arborescence complète
     for root, dirs, files in os.walk(folder_path):
         for file in files:

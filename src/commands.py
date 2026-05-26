@@ -51,14 +51,14 @@ or you can do `atom .`. Notice that, the last command will use the date and hour
 """
 
 from core import BasicCommands
+from apis import READONLY, EDIT
 
 
 class AtomCommands(BasicCommands):
     
     def __init__(self, *kwargs):
-        # TODO: create 
-        # `Storage.get_projects`
-        self.projects = Storage.get_projects()
+        
+        self.projects = READONLY()
 
     def atom_init(self, name: str ='.'):
         """ make or seek for a new project """
@@ -74,27 +74,41 @@ class AtomCommands(BasicCommands):
                 pass
 
 
-        is_created = False
-        if name in self.projects.names:
+        
+        if self.projects.exist(name):
             # go to the project 
             # located at name id 
             # for this project
-            self.atom_goto(name)
-            is_created = True
-            return
+            self.project = self.atom_open(name)
 
+        message = self.get_message(8) if not hasattr(self, 'project') else self.get_message(10)    
+
+        if hasattr(self, 'project'):
+            return 
+            
         # because create_project need the project_name attribute
         self.project_name = name
-        self.create_project() 
+        self.makeproj()
 
-        message = self.get_message(8) if not is_created else self.get_message(10)
 
         #print(message)
 
 
     def remove(self, name):
         """ remove project store with id 'name' """
-        if name in self.projects.names:
-            self.projects.delete(name)
+        if self.projects.exist(name):
+            EDIT().delete(name)
+
+
+    def open(self, name):
+        """ open project (name) """
+        # notice the search method return the coordinates
+        # or None if it's not found the project
+        # but I call this method on self.atom_init, which
+        # check first if the project with `name` exist . 
+        coords = READONLY().search(name)
+
+        return READONLY().get_projects()[coords]
+                
 
 

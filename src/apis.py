@@ -25,14 +25,14 @@ it come with names, search, exist, first_neightboors, last_neightboors, coords, 
 
 """
 
+
 import numpy as np
 import tools
 import os
 
 
 
-
-class READONLY_APIS:
+class READONLY:
     """ 
         class design to access only the projects
         it come with names, search, exist, first_neightboors,
@@ -65,20 +65,23 @@ class READONLY_APIS:
 
 
 
-    def coords(self, name):
+    def coords(self, name) -> np.ndarray:
         """
         return the coords of the projects.
         """
-        pass
+        return np.argwhere(self.get_projects() == name.encode('utf-8'))
 
 
-    def search(self, name):
+    def search(self, name)-> np.ndarray | None:
         """ 
         search the project store with name
         into the projects matrix if not found, 
         return None otherwise the project coordinates.
         """
-        pass
+        if self.exist(name):
+            return self.coords(name)
+        else:
+            return None
 
 
 
@@ -93,17 +96,23 @@ class READONLY_APIS:
         if  not self.exist(name):
             raise ValueError("Project  {name} is not found in the projects matrix.")
 
-        projects = self.get_projects()
-        name_byte = name.encode('utf-8')  # Encode the name to bytes for comparison
+        # get the coord of project
+        coords = self.search(name)
+
+        if not (coords is None):
+            # get the projects matrix
+            projects = self.get_projects()
+
+            # get the first neightboors
+            first_neightboors = (projects[coords[0][0] - 1], projects[coords[0][0] - 2]) if coords[0][0] > 1 else (None, None)
+
+            # get the last neightboors
+            left_bound = len(coords)
+            last_neightboors = (projects[left_bound], projects[left_bound + 2]) if left_bound < len(projects) - 2 else (None, None)
+
+            return first_neightboors, last_neightboors
 
 
-        # if project is not found, index is < 0.
-        # so index - 1 will be < 0 too. 
-        index = projects.index(name_byte)
-        _before = projects[index - 1] if index - 1 >= 0 else None
-        _after = projects[index + 1] if index + 1 < len(projects) else None
-
-        return (_before, _after)
 
 
 
@@ -161,9 +170,7 @@ class READONLY_APIS:
 
 
 
-
-
-class EDIT_APIS:
+class EDIT:
     """ 
         class design to access only the projects
         it come with names, search, exist, first_neightboors,
@@ -175,7 +182,7 @@ class EDIT_APIS:
 
     def __init__(self, *kwargs):
         """ EDIT_APIS """ 
-        self.readonly = READONLY_APIS(*kwargs)
+        self.readonly = READONLY(*kwargs)
 
         self.atomtype = [('project', 'S20'), 
                         ('version', 'S20'),
@@ -257,4 +264,19 @@ class EDIT_APIS:
 
     
         # 4.write the projects matrix to the file
+        np.save(self.readonly.file_path, new_matrix, allow_pickle=True)
+
+
+    def delete(self, name):
+        """ delete project with name """
+
+
+        if not self.readonly.exist(name):
+            raise ValueError(f"Project {name} is not found in the projects matrix.")
+
+        # delete the project from the projects matrix
+        new_matrix = np.load(self.readonly.file_path, allow_pickle=True)
+        new_matrix = new_matrix[new_matrix['project'] != name.encode('utf-8')]
+
+        
         np.save(self.readonly.file_path, new_matrix, allow_pickle=True)

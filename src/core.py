@@ -59,10 +59,10 @@ class BasicCommands:
 
 
 
-    def create_project(self):
+    def makeproj(self):
 		""" create the project """
 		# the project_name is get by the get_args function
-		self.path = self.path if hasattr(self, 'path') else pathlib.Path.cwd() 
+		self.path = self.path if hasattr(self, 'path') else self.get_working_dir() 
 		self.project_dir = self.path / self.project_name
 		
 		# Create the basic structure
